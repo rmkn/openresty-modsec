@@ -1,10 +1,10 @@
 FROM rmkn/centos7
 LABEL maintainer "rmkn"
 
-ENV OPENRESTY_VERSION 1.19.3.1
-ENV MODSECURITY_NGINX_VERSION 1.0.1
-ENV OWASP_CRS_VERSION 3.2.0
-ENV NGINX_VERSION 1.19.3
+ARG OPENRESTY_VERSION="1.19.3.1"
+ARG MODSECURITY_NGINX_VERSION="1.0.1"
+ARG OWASP_CRS_VERSION="3.2.0"
+ARG NGINX_VERSION="1.19.3"
 
 RUN yum install -y      make gcc gcc-c++ pcre-devel ccache                           git libtool autoconf file                 yajl-devel curl-devel      GeoIP-devel doxygen unzip libxml2-devel
 
