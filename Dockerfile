@@ -1,12 +1,13 @@
 FROM rmkn/centos7
 LABEL maintainer "rmkn"
 
-ARG OPENRESTY_VERSION="1.19.3.1"
-ARG MODSECURITY_NGINX_VERSION="1.0.1"
-ARG OWASP_CRS_VERSION="3.2.0"
-ARG NGINX_VERSION="1.19.3"
+ARG OPENRESTY_VERSION="1.19.9.1"
+ARG MODSECURITY_NGINX_VERSION="1.0.2"
+ARG CRS_VERSION="3.3.2"
+ARG NGINX_VERSION="1.19.9"
 
-RUN yum install -y      make gcc gcc-c++ pcre-devel ccache                           git libtool autoconf file                 yajl-devel curl-devel      GeoIP-devel doxygen unzip libxml2-devel
+RUN yum clean all && yum update -y
+RUN yum install -y make gcc gcc-c++ pcre-devel ccache git libtool autoconf file yajl-devel curl-devel GeoIP-devel doxygen unzip libxml2-devel
 
 RUN curl -o /etc/yum.repos.d/openresty.repo https://openresty.org/package/centos/openresty.repo
 RUN rpm --import https://openresty.org/package/pubkey.gpg
@@ -39,11 +40,11 @@ RUN curl -o /usr/local/src/openresty.tar.gz -SL https://openresty.org/download/o
 	&& mkdir /usr/local/openresty/nginx/modules/ \
 	&& cp -p ./build/nginx-${NGINX_VERSION}/objs/ngx_http_modsecurity_module.so /usr/local/openresty/nginx/modules/
 
-RUN curl -o /usr/local/src/owasp-modsecurity-crs.tar.gz -SL https://github.com/SpiderLabs/owasp-modsecurity-crs/archive/v${OWASP_CRS_VERSION}.tar.gz \
-	&& tar zxf /usr/local/src/owasp-modsecurity-crs.tar.gz -C /usr/local \
+RUN curl -o /usr/local/src/coreruleset.tar.gz -SL https://codeload.github.com/coreruleset/coreruleset/tar.gz/refs/tags/v${CRS_VERSION} \
+	&& tar zxf /usr/local/src/coreruleset.tar.gz -C /usr/local \
 	&& cd /usr/local \
-	&& ln -sf owasp-modsecurity-crs-${OWASP_CRS_VERSION} owasp-modsecurity-crs \
-	&& mv /usr/local/owasp-modsecurity-crs/crs-setup.conf.example /usr/local/owasp-modsecurity-crs/crs-setup.conf
+	&& ln -sf coreruleset-${CRS_VERSION} coreruleset \
+	&& mv /usr/local/coreruleset/crs-setup.conf.example /usr/local/coreruleset/crs-setup.conf
 
 COPY nginx.conf /usr/local/openresty/nginx/conf/
 COPY security.conf virtual.conf /usr/local/openresty/nginx/conf/conf.d/
