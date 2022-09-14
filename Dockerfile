@@ -1,10 +1,11 @@
 FROM rmkn/centos7
 LABEL maintainer "rmkn"
 
-ARG OPENRESTY_VERSION="1.19.9.1"
-ARG MODSECURITY_NGINX_VERSION="1.0.2"
+ARG OPENRESTY_VERSION="1.21.4.1"
+ARG NGINX_VERSION="1.21.4"
+ARG MODSECURITY_VERSION="v3.0.8"
+ARG MODSECURITY_NGINX_VERSION="1.0.3"
 ARG CRS_VERSION="3.3.2"
-ARG NGINX_VERSION="1.19.9"
 
 RUN yum clean all && yum update -y
 RUN yum install -y make gcc gcc-c++ pcre-devel ccache git libtool autoconf file yajl-devel curl-devel GeoIP-devel doxygen unzip libxml2-devel
@@ -14,7 +15,7 @@ RUN rpm --import https://openresty.org/package/pubkey.gpg
 RUN yum install -y openresty openresty-zlib-devel openresty-pcre-devel openresty-openssl111-devel
 
 RUN cd /usr/local/src \
-	&& git clone https://github.com/SpiderLabs/ModSecurity \
+	&& git clone https://github.com/SpiderLabs/ModSecurity -b ${MODSECURITY_VERSION} --depth 1 \
 	&& cd /usr/local/src/ModSecurity \
 	&& ./build.sh \
 	&& git submodule init \
